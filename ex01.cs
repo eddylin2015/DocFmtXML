@@ -13,7 +13,7 @@ namespace DocFmtXML
 {
     class ex01
     {
-        static string dt_json = @"
+        static string json = @"
 {[
         'STUD_ID': '7E39999A',
         'CODE': '1234567-X',
@@ -107,9 +107,9 @@ namespace DocFmtXML
 ";
         public static void ex()
         {
-            String Tml_Doc = @"C:\code\DocFmtXML\DocFmtXML\DSEJ-B01c_.docx";
+            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_t.docx";
             //String Tml_Doc = @"C:\code\DocFmtXML\DocFmtXML\simple.docx";
-            string strDoc1 = @"c:\temp\simple1.docx";
+            string strDoc1 = @"C:\code\DocFmtXML\simple1.docx";
             //Stream stream = File.Open(strDoc, FileMode.Open);
             if (File.Exists(strDoc1)) File.Delete(strDoc1);
             using (Stream outfs = File.Open(strDoc1, FileMode.OpenOrCreate))
@@ -120,8 +120,8 @@ namespace DocFmtXML
                     fs.Close();
                 }
 
-                string json = System.IO.File.ReadAllText(@"c:\temp\td.json");
-                DataTable dt = JsonConvert.DeserializeObject<DataTable>(json);
+                //string json = System.IO.File.ReadAllText(@"c:\temp\td.json");
+                //DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'","\""));
                 WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(outfs, true);
                 Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
                 List<OpenXmlElement> templete_li = new List<OpenXmlElement>();
@@ -131,7 +131,7 @@ namespace DocFmtXML
                 }
                 for (int i = 1; i < 4; i++)
                 {
-                    //Paragraph para = body.AppendChild(new Paragraph(new Run((new Break() { Type = BreakValues.Page }))));
+                    Paragraph para = body.AppendChild(new Paragraph(new Run((new Break() { Type = BreakValues.Page }))));
                     List<OpenXmlElement> clone_li = new List<OpenXmlElement>();
                     foreach (var ele in templete_li)
                     {
