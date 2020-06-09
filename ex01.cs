@@ -175,11 +175,23 @@ namespace DocFmtXML
             {
                 if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
                 {
-                    if (ele.InnerText.Contains("上學年度"))
+                    if (ele.InnerText.Contains("首次註冊"))
                     {
-
-
-                    }else if (ele.InnerText.Contains("上學年度"))
+                        var table_ = (Table)ele;
+                        string[] year_arr = dr["YEAR"].ToString().Split('/');
+                        ChangeTextInCell(table_, 0, 1, year_arr[0]);
+                        ChangeTextInCell(table_, 0, 3, year_arr[1]);
+                        char[] code_arr = dr["CODE"].ToString().ToCharArray();
+                        ChangeTextInCell(table_, 0, 5, code_arr[0].ToString());
+                        ChangeTextInCell(table_, 0, 7, code_arr[1].ToString());
+                        ChangeTextInCell(table_, 0, 9, code_arr[2].ToString());
+                        ChangeTextInCell(table_, 0, 11, code_arr[3].ToString());
+                        ChangeTextInCell(table_, 0, 13, code_arr[4].ToString());
+                        ChangeTextInCell(table_, 0, 15, code_arr[5].ToString());
+                        ChangeTextInCell(table_, 0, 17, code_arr[6].ToString());
+                        ChangeTextInCell(table_, 0, 19, code_arr[8].ToString());
+                    }
+                    else if (ele.InnerText.Contains("上學年度"))
                     {
                         if (dr["last_class"].ToString().Length > 2){
                             var table_ = (Table)ele;
@@ -201,6 +213,7 @@ namespace DocFmtXML
                         var table_ = (Table)ele;
                         ChangeTextInCell(table_, 0, 2, dr["NAME_C"].ToString());
                         ChangeTextInCell(table_, 0, 4, dr["NAME_P"].ToString());
+                        ChangeDateInCell(table_, 1, 3, dr["B_DATE"].ToString());
                         if (dr["SEX"].ToString().Equals("M"))
                         {
                             SetChkBox(table_, 2, 1, 0);
@@ -222,14 +235,12 @@ namespace DocFmtXML
                 foreach (Run run in parag.Elements<Run>())
                 {
                     if (!run.InnerXml.Contains("check")) continue;
-                    Console.WriteLine(run.InnerXml);
-
+                    //Console.WriteLine(run.InnerXml);
                     //foreach (FieldCode fc in run.Elements<FieldCode>())  Console.Write(fc.InnerXml); Console.Write(" 1* ");
                     foreach (FieldChar fc in run.Elements<FieldChar>())
                         {
                         if (fc.FormFieldData != null)
                         {
-                            Console.Write(fc.FormFieldData.InnerText); Console.Write(" 2*");
                             if (cnt == i)
                             {
                                 run.InnerXml = run.InnerXml.Replace("w:val=\"0\"", "w:val=\"1\"");
@@ -238,12 +249,10 @@ namespace DocFmtXML
                             
                         }
                         foreach (FormFieldData ck in fc.Elements<FormFieldData>())
-                            {
-                                Console.Write(ck.InnerText); Console.Write(" 2.2*");
-                            }
-
+                        {
+                                //Console.Write(ck.InnerText); Console.Write(" 2.2*");
+                        }
                     }
-                    
                 }
             }
         }
@@ -401,6 +410,23 @@ namespace DocFmtXML
             Text t = r.Elements<Text>().First();
             t.Text = txt;
         }
+        static void ChangeDateInCell(Table table, int rindex, int cindex, String txt)
+        {
+            TableRow row = table.Elements<TableRow>().ElementAt(rindex);
+            TableCell cell = row.Elements<TableCell>().ElementAt(cindex);
+            foreach (OpenXmlElement parag in cell.ChildElements)
+            {
+                if (parag.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
+                {
+                    Table tbl_ = (Table)parag;
+                    String[] arr=txt.Split('/');
+                    ChangeTextInCell(tbl_, 0, 0, arr.Length > 0 ? arr[0] :"");
+                    ChangeTextInCell(tbl_, 0, 2, arr.Length > 1 ? arr[1] : "");
+                    ChangeTextInCell(tbl_, 0, 4, arr.Length > 2 ? arr[2] : "");
+                }
+            }
+        }
+
         static void ChangeTextInCell(Table table, int rindex, int cindex, String txt)
         {
             TableRow row = table.Elements<TableRow>().ElementAt(rindex);
@@ -430,7 +456,6 @@ namespace DocFmtXML
         static void ChangeChkBox(Table table, int rindex, int cindex, int i)
         {
             TableCell cell = GetCell(table, rindex, cindex);
-
             //Console.WriteLine(cell.InnerText);
             foreach (Paragraph parag in cell.Elements<Paragraph>())
             {
@@ -438,15 +463,14 @@ namespace DocFmtXML
                 {
                     run.InnerXml = run.InnerXml.Replace("<w:checked w:val=\"0\" />", "<w:checked w:val=\"1\" />");
                     //Console.WriteLine(run.InnerXml);
-
                     if (run.InnerText.Contains("FORMCHECKBOX"))
                     {
                         foreach (FieldCode fc in run.Elements<FieldCode>())
                         {
-                            Console.Write(fc.InnerXml); Console.Write(" 1* ");
+                            //Console.Write(fc.InnerXml); Console.Write(" 1* ");
                             foreach (FormFieldData ck in fc.Elements<FormFieldData>())
                             {
-                                Console.Write(ck.InnerXml); Console.Write(" 1.1*");
+                                //Console.Write(ck.InnerXml); Console.Write(" 1.1*");
                             }
                         }
                     }
@@ -455,20 +479,19 @@ namespace DocFmtXML
                         foreach (FieldChar fc in run.Elements<FieldChar>())
                         {
                             if (fc.FormFieldData != null)
-                                Console.Write(fc.FormFieldData.InnerText); Console.Write(" 2*");
+                            {
+                             //Console.Write(fc.FormFieldData.InnerText); Console.Write(" 2*");
+                            }
 
                             foreach (FormFieldData ck in fc.Elements<FormFieldData>())
                             {
-                                Console.Write(ck.InnerText); Console.Write(" 2.2*");
+                             //Console.Write(ck.InnerText); Console.Write(" 2.2*");
                             }
                         }
                         foreach (Text fc in run.Elements<Text>())
                         {
-                            Console.Write(fc.InnerText); Console.Write(" 4*");
-
+                            //Console.Write(fc.InnerText); Console.Write(" 4*");
                         }
-
-                        //Console.Write(run.InnerText);
                     }
                 }
             }
