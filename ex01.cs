@@ -108,11 +108,8 @@ namespace DocFmtXML
         public static void ex()
         {
             String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_N.docx";
-            string strDoc1 = @"C:\code\DocFmtXML\simple1.docx";
-            //Stream stream = File.Open(strDoc, FileMode.Open);
-            string json = System.IO.File.ReadAllText(@"c:\temp\td.json");
-            if (File.Exists(@"c:\temp\td.json"))
-                json = System.IO.File.ReadAllText(@"c:\temp\td.json");
+            string strDoc1 = @"C:\code\DocFmtXML\xout.docx";
+            if (File.Exists(@"c:\temp\td.json"))  json = System.IO.File.ReadAllText(@"c:\temp\td.json");
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
             if (File.Exists(strDoc1)) File.Delete(strDoc1);
             using (Stream outfs = File.Open(strDoc1, FileMode.OpenOrCreate))
@@ -136,17 +133,11 @@ namespace DocFmtXML
                     {
                         DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
                         showTable(_tbl);
-                        //Console.WriteLine(_tbl.InnerText);
-                        // if (_tbl.InnerText.Contains("上學年度")) { ChangeTextInCell(_tbl, 0, 1, pagecnt.ToString()); }
-                        if (_tbl.InnerText.Contains("學生個人資料"))
-                        {
-                            //ChangeChkBox(_tbl, 2, 1, 1);
-                        }
                     }
                     if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
                     {
-                        //Paragraph _prg = (Paragraph)ele;
-                        //Console.WriteLine(_prg.InnerText);
+                        Paragraph _prg = (Paragraph)ele;
+                        Console.WriteLine(_prg.InnerText);
                     }
                     if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.SectionProperties")) { }
                 }
