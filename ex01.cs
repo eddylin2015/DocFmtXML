@@ -11,7 +11,7 @@ using System.Text;
 
 namespace DocFmtXML
 {
-    class ex01
+    partial class b01c_form
     {
         static string json = @"
 [{
@@ -107,7 +107,7 @@ namespace DocFmtXML
 ";
         public static void ex()
         {
-            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_N.docx";
+            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_A.docx";
             string strDoc1 = @"C:\code\DocFmtXML\xout.docx";
             if (File.Exists(@"c:\temp\td.json"))  json = System.IO.File.ReadAllText(@"c:\temp\td.json");
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
@@ -126,13 +126,17 @@ namespace DocFmtXML
                 {
                     templete_li.Add(ele);
                 }
+                int indexTable = 0;
+                int eleIndex = 0;
                 foreach (var ele in templete_li)
                 {
-                    Console.WriteLine(ele.ToString());
+                    Console.WriteLine(eleIndex++);
+                    Console.WriteLine(ele.ToString());                    
                     if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
                     {
                         DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
-                        showTable(_tbl);
+                        Console.WriteLine(indexTable++);
+                        showTable(_tbl);                       
                     }
                     if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
                     {
@@ -146,16 +150,28 @@ namespace DocFmtXML
                 {
                     Paragraph para = body.AppendChild(new Paragraph(new Run((new Break() { Type = BreakValues.Page }))));
                     List<OpenXmlElement> clone_li = new List<OpenXmlElement>();
-
+                    int eleindex = 0;
+                    bool newreg_flag=dt.Rows[i]["St_status"].Equals("1=新生");
                     foreach (var ele in templete_li)
                     {
+                        eleindex++;
+                        if (newreg_flag && eleindex == 34) continue;
+                        if (!newreg_flag && eleindex == 32) continue;
                         clone_li.Add((OpenXmlElement)ele.Clone());
                     }
                     fillRow(clone_li, dt.Rows[i]);
                     body.Append(clone_li);
                 }
                 fillRow(templete_li, dt.Rows[0]);
-
+                if (dt.Rows[0]["St_status"].Equals("1=新生"))
+                {
+                    body.RemoveChild(templete_li.ElementAt(33));
+                }
+                else
+                {
+                    body.RemoveChild(templete_li.ElementAt(31));
+                }
+                
                 wordprocessingDocument.Close();
                 outfs.Close();
             }
@@ -202,6 +218,27 @@ namespace DocFmtXML
                     else if (ele.InnerText.Contains("學生個人資料"))
                     {
                         var table_ = (Table)ele;
+                        for(int i = 0; i < baseinfo_field_posi.Length / 2; i++)
+                        {
+                            if (baseinfo_field_posi[i * 2].ToUpper().Contains("DATE"))
+                            {
+                                string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
+                                if (arr.Length == 2)
+                                    ChangeDateInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
+                            }else if (baseinfo_field_posi[i * 2].ToUpper().Contains("SEX"))
+                            {
+
+                            }
+                            else
+                            {
+                                string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
+                                if (arr.Length == 2)
+                                    ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i*2]].ToString());
+                            }
+
+                                
+                            
+                        }
                         ChangeTextInCell(table_, 0, 2, dr["NAME_C"].ToString());
                         ChangeTextInCell(table_, 0, 4, dr["NAME_P"].ToString());
                         ChangeDateInCell(table_, 1, 3, dr["B_DATE"].ToString());

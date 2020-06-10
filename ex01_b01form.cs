@@ -4,9 +4,9 @@ using System.Text;
 
 namespace DocFmtXML
 {
-    class b01c_form
+    partial class b01c_form
     {
-        public static string[] field_posi= new string[]{
+        public static string[] field_posi = new string[]{
         "STUD_ID"," 7E39999A",
         "CODE"," 1234567-X",
         "YEAR"," 2019/2020",
@@ -23,42 +23,39 @@ namespace DocFmtXML
         "GRADE"," P1",
         "CLASS"," A",
         "C_NO"," 65",
-
+        };
+        public static string[] baseinfo_field_posi = new string[]{
         "NAME_C","0.2",
         "NAME_P","0.4",
-        
         "SEX","2.1",
         "B_DATE","1.3",
         "B_PLACE","1.5",
-        
-        "ID_TYPE","5.2",
-        "ID_NO","4.5",
-        
-        "I_PLACE","6.3",
-        "I_DATE","7.4",
-        "V_DATE","7.5",
-        
+        "ID_TYPE","3.3",
+        "ID_NO","3.5",
+        "I_PLACE","5.3",
+        "I_DATE","6.4",
+        "V_DATE","6.5",
         "S6_TYPE","",
-        "S6_IDATE", "8.3",        "ADDRESS","13.3",
-
-        "S6_VDATE", "8.5",
-        
-        "NATION","10.1",
-        "ORIGIN","10.2",
+        "S6_IDATE", "7.3",
+        "S6_VDATE", "7.5",
+        "NATION","9.1",
+        "ORIGIN","9.2",
         "R_AREA","",
-        "RA_DESC","9.4",
+        "RA_DESC","8.4",
         "AREA","",
-        "POSTAL_CODE","11.4",
-        "ROAD","11.6",
-        "TEL","13.5",
-        "MOBILE","14.5",
-        "FATHER","15.2",
-        "MOTHER","16.2",
-        "F_PROF","15.4",
-        "M_PROF","16.4",
-        "GUARD","",   
-        "LIVE_SAME"," 0",
-        
+        "POSTAL_CODE","10.3",
+        "ROAD","10.5",
+        "ADDRESS","12.3",
+        "TEL","12.5",
+        "MOBILE","13.5",
+        "FATHER","14.2",
+        "MOTHER","15.2",
+        "F_PROF","14.4",
+        "M_PROF","15.4",
+        "GUARD","",
+        "LIVE_SAME",""
+        };
+        public static string[] EC_field_posi = new string[]{
         "EC_NAME"," 秀梅",
         "EC_REL"," 母子",
         "EC_TEL"," 61111137",
