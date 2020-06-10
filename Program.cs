@@ -7,7 +7,8 @@ namespace DocFmtXML
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            b01c_form.ex();
+            b01c_form.showDocx();
+               b01c_form.ex();
         }
     }
 }

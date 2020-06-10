@@ -1,0 +1,41 @@
+[33mcommit 77fa286e27672eba757a71db61bf9116d74edc98[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: eddylin2015 <eddylin2015@gmail.com>
+Date:   Tue Jun 9 21:20:00 2020 +0800
+
+    field position array
+
+[33mcommit 3e510caa5609836a0dbe9301fa4dea43cb935d50[m
+Author: lammou <lammou@mbc.edu.mo>
+Date:   Tue Jun 9 16:52:10 2020 +0800
+
+    add Date and Code
+
+[33mcommit a203b6986211f1fef76c6bf1d87926e3ee692f56[m
+Author: lammou <lammou@mbc.edu.mo>
+Date:   Tue Jun 9 11:58:00 2020 +0800
+
+    fill text(Name) checkbox
+
+[33mcommit 72f222c2543fd8a7fcafe67ceeb236f8a7b00998[m
+Author: eddylin2015 <eddylin2015@gmail.com>
+Date:   Mon Jun 8 20:59:54 2020 +0800
+
+    B01c_N newreg B01c_R Change Reg
+
+[33mcommit fed71d99e6f07e2bbd95fc49a3bc5712653b5976[m
+Author: lammou <lammou@mbc.edu.mo>
+Date:   Mon Jun 8 17:26:47 2020 +0800
+
+    test ex
+
+[33mcommit e75bf8f20510e2415de7c4f548635bc8b2b34380[m
+Author: lammou <lammou@mbc.edu.mo>
+Date:   Mon Jun 8 12:00:43 2020 +0800
+
+    ex01 code.
+
+[33mcommit 81b7deaba9d01c535d27e62ee808d42767848901[m
+Author: lammou <lammou@mbc.edu.mo>
+Date:   Mon Jun 8 11:52:37 2020 +0800
+
+    using MS DocumentFormat,OpenXML.Word Export DSEJ-B01C Form.

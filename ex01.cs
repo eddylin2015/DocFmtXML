@@ -102,9 +102,138 @@ namespace DocFmtXML
         'S_SCHOOL': '',
         'S_EDU': '',
         'note': '',
+        'last_class': ''},
+{
+        'STUD_ID': '7E39998A',
+        'CODE': '1234566-X',
+        'YEAR': '2019/2020',
+        'BP': '2',
+        'IP': '1',
+        'IDT': 'BIRNP',
+        'RAR': 'M',
+        'AR': 'M',
+        'GAR': 'M',
+        'EAR': 'M',
+        'ZH_S_CODE': '澳門中學',
+        'PRE_S_CODE': '',
+        'NAME_C': '周星星',
+        'NAME_P': 'SOU XING XING',
+        'SEX': 'M',
+        'B_DATE': '2012/01/01',
+        'B_PLACE': '',
+        'ID_TYPE': '',
+        'ID_NO': '1006010(0)',
+        'I_PLACE': '',
+        'I_DATE': '2019/01/07',
+        'V_DATE': '2024/01/07',
+        'S6_TYPE': '3=其他逗留許可',
+        'S6_IDATE': null,
+        'S6_VDATE': null,
+        'NATION': '中國',
+        'ORIGIN': '廣東',
+        'R_AREA': '',
+        'RA_DESC': '',
+        'AREA': 'M=澳門',
+        'POSTAL_CODE': '',
+        'ROAD': '大馬路',
+        'ADDRESS': '新邨N樓X座',
+        'TEL': '/',
+        'MOBILE': '61111177',
+        'FATHER': '周大福',
+        'MOTHER': '秀梅',
+        'F_PROF': '律師',
+        'M_PROF': '主婦',
+        'GUARD': 'M',
+        'LIVE_SAME': '0',
+        'EC_NAME': '秀梅',
+        'EC_REL': '母子',
+        'EC_TEL': '61111137',
+        'EC_AREA': 'M=澳門',
+        'EC_POSTAL_CODE': '',
+        'EC_ROAD': '大馬路',
+        'EC_ADDRESS': '新邨N樓X座',
+        'S_CODE': '159',
+        'GRADE': 'P1',
+        'CLASS': 'A',
+        'C_NO': '65',
+        'G_NAME': '秀梅',
+        'G_RELATION': '',
+        'G_PROFESSION': '主婦',
+        'G_AREA': 'M=澳門',
+        'G_POSTAL_CODE': '',
+        'G_ROAD': '大馬路',
+        'G_ADDRESS': '新邨N樓X座',
+        'G_TEL': '61111177',
+        'GUARDMOBIL': '61111177',
+        'F_tel1': '61111197',
+        'F_tel2': '/',
+        'M_tel1': '61111177',
+        'M_tel2': '/',
+        'G_tel1': '61111377',
+        'G_tel2': '/',
+        'Parent_sms': '61111377',
+        'Stud_sms': '',
+        'Reg_in_date': '2019-09-09',
+        'Reg_in_Class': 'P1A',
+        'St_status': '3=插班',
+        'Leave_date': '',
+        'Leave_Class': '',
+        'Leave_reason': '',
+        'Religion': '',
+        'MBC_STUD': '0',
+        'K_CLASS': '',
+        'K_SCHOOL': '',
+        'K_EDU': '',
+        'P_CLASS': 'P2',
+        'P_SCHOOL': '台東小學',
+        'P_EDU': '',
+        'S_CLASS': '',
+        'S_SCHOOL': '',
+        'S_EDU': '',
+        'note': '',
         'last_class': ''
+
     }]
 ";
+        public static void showDocx()
+        {
+            string strDoc1 = @"C:\code\DocFmtXML\xout0.docx";
+            using (Stream outfs = File.Open(strDoc1, FileMode.Open))
+            {
+                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(outfs, true);
+                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
+                foreach (var ele in body.ChildElements)
+                {
+                    if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
+                    {
+                        DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
+                        showTable(_tbl);
+                        if (_tbl.InnerText.Contains("學生註冊表"))
+                        {
+                            var cell = GetCell(_tbl, 2, 1);
+                            Console.WriteLine(cell.InnerXml);
+                            foreach(var ele_ in cell.ChildElements)
+                            {
+                                Console.WriteLine(ele_.GetType().ToString());
+                            }
+                            foreach (Paragraph parag in cell.Elements<Paragraph>())
+                            {
+
+                                foreach (Run run in parag.Elements<Run>())
+                                {
+
+                                    Console.Write(run.InnerXml);
+                                    Console.Write(run.InnerText);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                wordprocessingDocument.Close();
+                outfs.Close();
+            }
+        }
         public static void ex()
         {
             String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_A.docx";
@@ -136,7 +265,8 @@ namespace DocFmtXML
                     {
                         DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
                         Console.WriteLine(indexTable++);
-                        showTable(_tbl);                       
+                        showTable(_tbl);
+                        if (indexTable == 1) Console.WriteLine(_tbl.InnerXml);
                     }
                     if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
                     {
@@ -200,10 +330,8 @@ namespace DocFmtXML
                     }
                     else if (ele.InnerText.Contains("上學年度"))
                     {
-                        if (dr["last_class"].ToString().Length > 2){
                             var table_ = (Table)ele;
-                            ChangeTextInCell(table_, 0, 1, String.Format("159  澳門浸信中學      ({0})", dr["last_class"].ToString()));
-                        }
+                            ChangeTextInCell(table_, 0, 1, String.Format("{0}", dr["PRE_S_CODE"].ToString()));
                     }
                     
                 else if (ele.InnerText.Contains("註冊資料"))
@@ -235,9 +363,6 @@ namespace DocFmtXML
                                 if (arr.Length == 2)
                                     ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i*2]].ToString());
                             }
-
-                                
-                            
                         }
                         ChangeTextInCell(table_, 0, 2, dr["NAME_C"].ToString());
                         ChangeTextInCell(table_, 0, 4, dr["NAME_P"].ToString());
@@ -263,8 +388,6 @@ namespace DocFmtXML
                 foreach (Run run in parag.Elements<Run>())
                 {
                     if (!run.InnerXml.Contains("check")) continue;
-                    //Console.WriteLine(run.InnerXml);
-                    //foreach (FieldCode fc in run.Elements<FieldCode>())  Console.Write(fc.InnerXml); Console.Write(" 1* ");
                     foreach (FieldChar fc in run.Elements<FieldChar>())
                         {
                         if (fc.FormFieldData != null)
@@ -274,161 +397,12 @@ namespace DocFmtXML
                                 run.InnerXml = run.InnerXml.Replace("w:val=\"0\"", "w:val=\"1\"");
                             }
                             cnt++;
-                            
-                        }
-                        foreach (FormFieldData ck in fc.Elements<FormFieldData>())
-                        {
-                                //Console.Write(ck.InnerText); Console.Write(" 2.2*");
                         }
                     }
                 }
             }
         }
-        public static void out_B01c(Stream stream, DataTable dt)
-        {
-            // Open a WordProcessingDocument based on a stream.
-            WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(stream, true);
-            // Assign a reference to the existing document body.
-            Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-            // Add new text.
-            //Paragraph para = body.AppendChild(new Paragraph());
-            //Run run = para.AppendChild(new Run());
-            //run.AppendChild(new Text(txt));
-            //my coding 
-            List<OpenXmlElement> templete_li = new List<OpenXmlElement>();
-            foreach (var ele in body.ChildElements)
-            {
-                templete_li.Add((OpenXmlElement)ele.Clone());
-            }
-
-            if(dt.Rows[0]["St_status"].ToString().Equals("1=新生"))
-            {
-
-            }
-            
-            for (int i = 1; i < 2; i++)
-            {
-                Paragraph para = body.AppendChild(new Paragraph(new Run((new Break() { Type = BreakValues.Page }))));
-                List<OpenXmlElement> clone_li = new List<OpenXmlElement>();
-                foreach (var ele in templete_li)
-                {
-                    clone_li.Add((OpenXmlElement)ele.Clone());
-                }
-                body.Append(clone_li);
-            }
-            int pagecnt = 0;
-            foreach (var ele in body.ChildElements)
-            {
-                Console.WriteLine(ele.ToString());
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
-                {
-                    DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
-                    showTable(_tbl);
-                    //Console.WriteLine(_tbl.InnerText);
-                   // if (_tbl.InnerText.Contains("上學年度")) { ChangeTextInCell(_tbl, 0, 1, pagecnt.ToString()); }
-                    if (_tbl.InnerText.Contains("學生個人資料"))
-                    {
-                        //ChangeChkBox(_tbl, 2, 1, 1);
-                    }
-                }
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
-                {
-                    Paragraph _prg = (Paragraph)ele;
-                    Console.WriteLine(_prg.InnerText);
-                }
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.SectionProperties")) pagecnt++;
-            }
-
-            // Close the document handle.
-            wordprocessingDocument.Close();
-            // Caller must close the stream.
-
-        }
-        /*
-         * System.IO.File.WriteAllText(@"C:\code\ds_" + cno + ".json", Newtonsoft.Json.JsonConvert.SerializeObject(ds));
-         *
-         *string json = System.IO.File.ReadAllText(@"json/ds_" + pclass + ".json");
-            DataSet ds = JsonConvert.DeserializeObject<DataSet>(json);
-            for (int i = 0; i < ds.Tables.Count; i++)
-            {
-                Console.WriteLine(ds.Tables[i].TableName);
-            }
-            DataColumn pcol = ds.Tables["Table"].Columns["stud_ref"];
-            String[] subtbNs = { "py", "cd", "mk", "ac", "gc" };
-            for (int i = 0; i < subtbNs.Length; i++)
-            {
-                DataColumn ccol = ds.Tables[subtbNs[i]].Columns["stud_ref"];
-                if (ccol != null)
-                {
-                    DataRelation dr = new DataRelation("sr_" + subtbNs[i], pcol, ccol);
-                    dr.Nested = true;
-                    ds.Relations.Add(dr);
-                }
-            }
-      */
-        public static void ex_open_append_text()
-        {
-            //string strDoc = @"c:\temp\DSEJ-B01c.docx";
-            string strDoc = @"c:\temp\simple.docx";
-            string txt = "Append text in body - OpenAndAddToWordprocessingStream";
-            Stream stream = File.Open(strDoc, FileMode.Open);
-            OpenAndAddToWordprocessingStream(stream, txt);
-            stream.Close();
-        }
-        public static void OpenAndAddToWordprocessingStream_(Stream stream, string txt)
-        {
-            // Open a WordProcessingDocument based on a stream.
-            WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(stream, true);
-            // Assign a reference to the existing document body.
-            Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-            // Add new text.
-            //Paragraph para = body.AppendChild(new Paragraph());
-            //Run run = para.AppendChild(new Run());
-            //run.AppendChild(new Text(txt));
-
-            //my coding 
-            List<OpenXmlElement> templete_li = new List<OpenXmlElement>();
-            foreach (var ele in body.ChildElements)
-            {
-                templete_li.Add(ele);
-            }
-            for (int i = 1; i < 2; i++)
-            {
-                Paragraph para = body.AppendChild(new Paragraph(new Run((new Break() { Type = BreakValues.Page }))));
-                List<OpenXmlElement> clone_li = new List<OpenXmlElement>();
-                foreach (var ele in templete_li)
-                {
-                    clone_li.Add((OpenXmlElement)ele.Clone());
-                }
-                body.Append(clone_li);
-            }
-            int pagecnt = 0;
-            foreach (var ele in body.ChildElements)
-            {
-                Console.WriteLine(ele.ToString());
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
-                {
-                    DocumentFormat.OpenXml.Wordprocessing.Table _tbl = (DocumentFormat.OpenXml.Wordprocessing.Table)ele;
-                    showTable(_tbl);
-                    //Console.WriteLine(_tbl.InnerText);
-                    if (_tbl.InnerText.Contains("上學年度")) { ChangeTextInCell(_tbl, 0, 1, pagecnt.ToString()); }
-                    if (_tbl.InnerText.Contains("學生個人資料"))
-                    {
-                        ChangeChkBox(_tbl, 2, 1, 1);
-                    }
-                }
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
-                {
-                    Paragraph _prg = (Paragraph)ele;
-                    Console.WriteLine(_prg.InnerText);
-                }
-                if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.SectionProperties")) pagecnt++;
-            }
-
-            // Close the document handle.
-            wordprocessingDocument.Close();
-            // Caller must close the stream.
-        }
+        
         static void WriteCell(Table table, int rindex, int cindex, String txt)
         {
             TableRow row = table.Elements<TableRow>().ElementAt(rindex);
@@ -480,70 +454,7 @@ namespace DocFmtXML
             TableCell cell = row.Elements<TableCell>().ElementAt(cindex);
             return cell;
         }
-
-        static void ChangeChkBox(Table table, int rindex, int cindex, int i)
-        {
-            TableCell cell = GetCell(table, rindex, cindex);
-            //Console.WriteLine(cell.InnerText);
-            foreach (Paragraph parag in cell.Elements<Paragraph>())
-            {
-                foreach (Run run in parag.Elements<Run>())
-                {
-                    run.InnerXml = run.InnerXml.Replace("<w:checked w:val=\"0\" />", "<w:checked w:val=\"1\" />");
-                    //Console.WriteLine(run.InnerXml);
-                    if (run.InnerText.Contains("FORMCHECKBOX"))
-                    {
-                        foreach (FieldCode fc in run.Elements<FieldCode>())
-                        {
-                            //Console.Write(fc.InnerXml); Console.Write(" 1* ");
-                            foreach (FormFieldData ck in fc.Elements<FormFieldData>())
-                            {
-                                //Console.Write(ck.InnerXml); Console.Write(" 1.1*");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (FieldChar fc in run.Elements<FieldChar>())
-                        {
-                            if (fc.FormFieldData != null)
-                            {
-                             //Console.Write(fc.FormFieldData.InnerText); Console.Write(" 2*");
-                            }
-
-                            foreach (FormFieldData ck in fc.Elements<FormFieldData>())
-                            {
-                             //Console.Write(ck.InnerText); Console.Write(" 2.2*");
-                            }
-                        }
-                        foreach (Text fc in run.Elements<Text>())
-                        {
-                            //Console.Write(fc.InnerText); Console.Write(" 4*");
-                        }
-                    }
-                }
-            }
-            /*
-           foreach (Paragraph parag in cell.Elements<Paragraph>())
-            {
-                if (parag.InnerText.Contains("FORMCHECKBOX"))
-                {
-                    //Console.Write("XV");
-                    foreach (Run run in parag.Elements<Run>())
-                    {
-
-                        if (run.InnerText.Contains("FORMCHECKBOX"))
-                        {
-                            Console.Write("XV");
-                        }
-                        else
-                        {
-                            Console.Write(run.InnerText);
-                        }
-                    }
-                }
-             }*/
-    }
+        
     static void showTable(Table _tbl)
         {
             foreach (TableRow row in _tbl.Elements<TableRow>())
@@ -555,46 +466,28 @@ namespace DocFmtXML
 
                         if (parag.InnerText.Contains("FORMCHECKBOX"))
                         {
-                            //Console.Write("XV");
                             foreach (Run run in parag.Elements<Run>())
                             {
 
                                 if (run.InnerText.Contains("FORMCHECKBOX"))
                                 {
-                                    Console.Write("XV");
+                                    Console.Write("口");
                                 }
                                 else
                                 {
                                     Console.Write(run.InnerText);
                                 }
-
-
                             }
                         }
                         else
                         {
                             Console.Write(parag.InnerText);
                         }
-
-
-
-
-                        //Console.Write("\t");
-                        //IEnumerable<Run> runs = parag.Elements<Run>();
-
-                        //Run run=runs.GetEnumerator().Current;
-                        //Text text = run.Elements<Text>().GetEnumerator().Current;
-
-                        //Run run = parag.Elements<Run>().First();
-                        // Set the text for the run.  
-                        //Text text = run.Elements<Text>().First();
-                        //text.Text = addedText;
-
                     }
                     Console.Write("\t");
-
                 }
-                Console.WriteLine();
+                Console.
+                    WriteLine();
             }
         }
         public static void OpenAndAddToWordprocessingStream(Stream stream, string txt)
@@ -614,5 +507,38 @@ namespace DocFmtXML
             wordprocessingDocument.Close();
             // Caller must close the stream.
         }
+
+        //Console.Write("\t");
+        //IEnumerable<Run> runs = parag.Elements<Run>();
+        //Run run=runs.GetEnumerator().Current;
+        //Text text = run.Elements<Text>().GetEnumerator().Current;
+        //Run run = parag.Elements<Run>().First();
+        // Set the text for the run.  
+        //Text text = run.Elements<Text>().First();
+        //text.Text = addedText;
+
+        
+        /*
+         * System.IO.File.WriteAllText(@"C:\code\ds_" + cno + ".json", Newtonsoft.Json.JsonConvert.SerializeObject(ds));
+         *
+         *string json = System.IO.File.ReadAllText(@"json/ds_" + pclass + ".json");
+            DataSet ds = JsonConvert.DeserializeObject<DataSet>(json);
+            for (int i = 0; i < ds.Tables.Count; i++)
+            {
+                Console.WriteLine(ds.Tables[i].TableName);
+            }
+            DataColumn pcol = ds.Tables["Table"].Columns["stud_ref"];
+            String[] subtbNs = { "py", "cd", "mk", "ac", "gc" };
+            for (int i = 0; i < subtbNs.Length; i++)
+            {
+                DataColumn ccol = ds.Tables[subtbNs[i]].Columns["stud_ref"];
+                if (ccol != null)
+                {
+                    DataRelation dr = new DataRelation("sr_" + subtbNs[i], pcol, ccol);
+                    dr.Nested = true;
+                    ds.Relations.Add(dr);
+                }
+            }
+      */
     }
 }
