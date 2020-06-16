@@ -236,7 +236,7 @@ namespace DocFmtXML
         }
         public static void ex()
         {
-            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_A.docx";
+            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_B.docx";
             string strDoc1 = @"C:\code\DocFmtXML\xout.docx";
             if (File.Exists(@"c:\temp\td.json"))  json = System.IO.File.ReadAllText(@"c:\temp\td.json");
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
