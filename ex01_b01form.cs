@@ -53,25 +53,30 @@ namespace DocFmtXML
         "F_PROF","14.4",
         "M_PROF","15.4",
         "GUARD","",
+        "G_RELATION","16.4",
+        "GUARDMOBIL","16.6",
         "LIVE_SAME",""
+       };
+        public static string[] GU_field_posi = new string[]{
+        "G_NAME","0.2",
+        "G_RELATION","",
+        "G_PROFESSION","0.4",
+        "G_AREA","",
+        "G_POSTAL_CODE","",
+        "G_ROAD","1.4",
+        "G_ADDRESS","3.3",
+        "G_TEL","3.5",
         };
         public static string[] EC_field_posi = new string[]{
-        "EC_NAME"," 秀梅",
-        "EC_REL"," 母子",
-        "EC_TEL"," 61111137",
-        "EC_AREA"," M=澳門",
+        "EC_NAME","0.2",
+        "EC_REL","0.4",
+        "EC_TEL","3.6",
+        "EC_AREA","",
         "EC_POSTAL_CODE"," ",
-        "EC_ROAD"," 大馬路",
-        "EC_ADDRESS"," 新邨N樓X座",
-        "G_NAME"," 秀梅",
-        "G_RELATION"," ",
-        "G_PROFESSION"," 主婦",
-        "G_AREA"," M=澳門",
-        "G_POSTAL_CODE"," ",
-        "G_ROAD"," 大馬路",
-        "G_ADDRESS"," 新邨N樓X座",
-        "G_TEL"," 61111177",
-        "GUARDMOBIL"," 61111177",
+        "EC_ROAD","1.4",
+        "EC_ADDRESS","3.3" };
+        public static string[] reqinfo_field_posi = new string[]{
+
         "F_tel1"," 61111197",
         "F_tel2"," /",
         "M_tel1"," 61111177",

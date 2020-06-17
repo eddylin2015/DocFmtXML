@@ -306,12 +306,38 @@ namespace DocFmtXML
                 outfs.Close();
             }
         }
+        static void fillTable(Table table_,String[] baseinfo_field_posi,DataRow dr)
+        { 
+            //var table_ = (Table)ele;
+            for (int i = 0; i < baseinfo_field_posi.Length / 2; i++)
+            {
+                if (baseinfo_field_posi[i * 2].ToUpper().Contains("DATE"))
+                {
+                    string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
+                    if (arr.Length == 2)
+                        ChangeDateInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
+                }
+                else if (baseinfo_field_posi[i * 2].ToUpper().Contains("SEX"))
+                {
+
+                }
+                else
+                {
+                    string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
+                    Console.WriteLine(baseinfo_field_posi[i * 2]);
+                    if (arr.Length == 2)
+                        ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
+                }
+            }
+        }
         static void fillRow(List<OpenXmlElement> li,DataRow dr)
         {
+            int cnt = 0;
             foreach (var ele in li)
             {
                 if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
                 {
+                    cnt++;
                     if (ele.InnerText.Contains("首次註冊"))
                     {
                         var table_ = (Table)ele;
@@ -330,11 +356,11 @@ namespace DocFmtXML
                     }
                     else if (ele.InnerText.Contains("上學年度"))
                     {
-                            var table_ = (Table)ele;
-                            ChangeTextInCell(table_, 0, 1, String.Format("{0}", dr["PRE_S_CODE"].ToString()));
+                        var table_ = (Table)ele;
+                        ChangeTextInCell(table_, 0, 1, String.Format("{0}", dr["PRE_S_CODE"].ToString()));
                     }
-                    
-                else if (ele.InnerText.Contains("註冊資料"))
+
+                    else if (ele.InnerText.Contains("註冊資料"))
                     {
                         var table_ = (Table)ele;
                         ChangeTextInCell(table_, 0, 2, "159");
@@ -346,26 +372,9 @@ namespace DocFmtXML
                     else if (ele.InnerText.Contains("學生個人資料"))
                     {
                         var table_ = (Table)ele;
-                        for(int i = 0; i < baseinfo_field_posi.Length / 2; i++)
-                        {
-                            if (baseinfo_field_posi[i * 2].ToUpper().Contains("DATE"))
-                            {
-                                string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
-                                if (arr.Length == 2)
-                                    ChangeDateInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
-                            }else if (baseinfo_field_posi[i * 2].ToUpper().Contains("SEX"))
-                            {
-
-                            }
-                            else
-                            {
-                                string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
-                                if (arr.Length == 2)
-                                    ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i*2]].ToString());
-                            }
-                        }
-                        ChangeTextInCell(table_, 0, 2, dr["NAME_C"].ToString());
-                        ChangeTextInCell(table_, 0, 4, dr["NAME_P"].ToString());
+                        fillTable(table_, baseinfo_field_posi, dr);
+                        //ChangeTextInCell(table_, 0, 2, dr["NAME_C"].ToString());
+                        //ChangeTextInCell(table_, 0, 4, dr["NAME_P"].ToString());
                         ChangeDateInCell(table_, 1, 3, dr["B_DATE"].ToString());
                         if (dr["SEX"].ToString().Equals("M"))
                         {
@@ -375,7 +384,20 @@ namespace DocFmtXML
                         {
                             SetChkBox(table_, 2, 1, 1);
                         }
-                    } 
+
+                    }
+                    else if (cnt == 6)
+                    {
+                        var table_ = (Table)ele;
+                        fillTable(table_, GU_field_posi, dr);
+
+                    }
+                    else if (cnt == 7)
+                    {
+                        var table_ = (Table)ele;
+                        fillTable(table_, EC_field_posi, dr);
+
+                    }
                 }
             }
         }
