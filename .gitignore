@@ -5,3 +5,4 @@ out.docx
 xout*.docx
 ~*.*
 .vs/
+td.json
