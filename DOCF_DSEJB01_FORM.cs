@@ -11,59 +11,14 @@ using System.Text;
 
 namespace DocFmtXML
 {
-
-    partial class b01c_form
+    class DOCF_DSEJB01_FORM
     {
-        
-
-        public static void showDocx(String strDoc1)
+        public static void docx(DataTable dt,String Tml_Doc,String strDoc1)
         {
-            using (Stream outfs = File.Open(strDoc1, FileMode.Open))
-            {
-                WordprocessingDocument wordprocessingDocument = WordprocessingDocument.Open(outfs, true);
-                Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-                foreach (var ele in body.ChildElements)
-                {
-                    if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Table"))
-                    {
-                        
-                        Table _tbl = (Table)ele;
-                        showTable(_tbl);
-                        if (_tbl.InnerText.Contains("學生註冊表"))
-                        {
-                            var cell = GetCell(_tbl, 2, 1);
-                            Console.WriteLine(cell.InnerXml);
-                            foreach (var ele_ in cell.ChildElements)
-                            {
-                                Console.WriteLine(ele_.GetType().ToString());
-                            }
-                            foreach (Paragraph parag in cell.Elements<Paragraph>())
-                            {
-                                foreach (Run run in parag.Elements<Run>())
-                                {
-                                    //Console.Write(run.InnerXml);
-                                    Console.WriteLine(run.InnerText);
-                                }
-                            }
-                        }
-                    }
-                    else if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.Paragraph"))
-                    {
-                        Paragraph _prg = (Paragraph)ele;
-                        Console.WriteLine(_prg.InnerText);
-                    }
-                    else if (ele.ToString().Equals("DocumentFormat.OpenXml.Wordprocessing.SectionProperties")) { }
-                }
-                wordprocessingDocument.Close();
-                outfs.Close();
-            }
-        }
-        public static void ex()
-        {
-            String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_B.docx";
-            string strDoc1 = @"C:\code\DocFmtXML\xout.docx";
-            if (File.Exists(@"C:\code\DocFmtXML\td.json")) json = System.IO.File.ReadAllText(@"C:\code\DocFmtXML\td.json");
-            DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
+            //String Tml_Doc = @"C:\code\DocFmtXML\DSEJ-B01c_B.docx";
+            //string strDoc1 = @"C:\code\DocFmtXML\xout.docx";
+            //if (File.Exists(@"C:\code\DocFmtXML\td.json")) json = System.IO.File.ReadAllText(@"C:\code\DocFmtXML\td.json");
+            //DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
             if (File.Exists(strDoc1)) File.Delete(strDoc1);
             using (Stream outfs = File.Open(strDoc1, FileMode.OpenOrCreate))
             {
@@ -91,7 +46,7 @@ namespace DocFmtXML
                         if (newreg_flag && eleindex == 34) continue;
                         if (!newreg_flag && eleindex == 32) continue;
                         var clone_ele = (OpenXmlElement)ele.Clone();
-                        if ( eleindex == 34 || eleindex == 32)
+                        if (eleindex == 34 || eleindex == 32)
                         {
                             Table reginfo_table = GetCell((Table)clone_ele, 0, 0).Elements<Table>().ElementAt(0);
                             fillTextInTable(reginfo_table, reqinfo_field_posi, dt.Rows[i]);
@@ -139,7 +94,7 @@ namespace DocFmtXML
                 else
                 {
                     string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
-                    Console.WriteLine(baseinfo_field_posi[i * 2]);
+                   // Console.WriteLine(baseinfo_field_posi[i * 2]);
                     if (arr.Length == 2)
                         ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
                 }
@@ -189,8 +144,8 @@ namespace DocFmtXML
                         var table_ = (Table)ele;
                         fillTextInTable(table_, baseinfo_field_posi, dr);
                         ChangeDateInCell(table_, 1, 3, dr["B_DATE"].ToString());
-                        if (dr["SEX"].ToString().Equals("M")) { SetChkBox(table_, 2, 1, 0);  } 
-                        else if (dr["SEX"].ToString().Equals("F")){ SetChkBox(table_, 2, 1, 1); }
+                        if (dr["SEX"].ToString().Equals("M")) { SetChkBox(table_, 2, 1, 0); }
+                        else if (dr["SEX"].ToString().Equals("F")) { SetChkBox(table_, 2, 1, 1); }
                         if (dr["BP"].ToString().Equals("1")) { SetChkBox(table_, 2, 4, 0); }
                         else if (dr["BP"].ToString().Equals("2")) { SetChkBox(table_, 2, 4, 1); }
                         if (dr["IDT"].ToString().Equals("BIRP")) { SetChkBox(table_, 4, 2, 0); }
@@ -227,38 +182,11 @@ namespace DocFmtXML
                 }
             }
         }
-        static void SetChkBox(Table table, int rindex, int cindex, int i)
-        {
-            int cnt = 0;
-            TableCell cell = GetCell(table, rindex, cindex);
-            foreach (Paragraph parag in cell.Elements<Paragraph>())
-            {
-                foreach (Run run in parag.Elements<Run>())
-                {
-                    if (!run.InnerXml.Contains("check")) continue;
-                    foreach (FieldChar fc in run.Elements<FieldChar>())
-                    {
-                        if (fc.FormFieldData != null)
-                        {
-                            if (cnt == i)
-                            {
-                                run.InnerXml = run.InnerXml.Replace("w:val=\"0\"", "w:val=\"1\"");
-                            }
-                            cnt++;
-                        }
-                    }
-                }
-            }
-        }
-
-        static void WriteCell(Table table, int rindex, int cindex, String txt)
+        static TableCell GetCell(Table table, int rindex, int cindex)
         {
             TableRow row = table.Elements<TableRow>().ElementAt(rindex);
             TableCell cell = row.Elements<TableCell>().ElementAt(cindex);
-            Paragraph p = cell.Elements<Paragraph>().First();
-            Run r = p.Elements<Run>().First();
-            Text t = r.Elements<Text>().First();
-            t.Text = txt;
+            return cell;
         }
         static void ChangeDateInCell(Table table, int rindex, int cindex, String txt)
         {
@@ -296,121 +224,92 @@ namespace DocFmtXML
                 run.AppendChild(new Text(txt));
             }
         }
-        static TableCell GetCell(Table table, int rindex, int cindex)
+        static void SetChkBox(Table table, int rindex, int cindex, int i)
         {
-            TableRow row = table.Elements<TableRow>().ElementAt(rindex);
-            TableCell cell = row.Elements<TableCell>().ElementAt(cindex);
-            return cell;
-        }
-
-        static void showTable(Table _tbl)
-        {
-            foreach (TableRow row in _tbl.Elements<TableRow>())
+            int cnt = 0;
+            TableCell cell = GetCell(table, rindex, cindex);
+            foreach (Paragraph parag in cell.Elements<Paragraph>())
             {
-                foreach (TableCell cell in row.Elements<TableCell>())
+                foreach (Run run in parag.Elements<Run>())
                 {
-                    foreach (Paragraph parag in cell.Elements<Paragraph>())
+                    if (!run.InnerXml.Contains("check")) continue;
+                    foreach (FieldChar fc in run.Elements<FieldChar>())
                     {
-
-                        if (parag.InnerText.Contains("FORMCHECKBOX"))
+                        if (fc.FormFieldData != null)
                         {
-                            foreach (Run run in parag.Elements<Run>())
+                            if (cnt == i)
                             {
-
-                                if (run.InnerText.Contains("FORMCHECKBOX"))
-                                {
-                                    Console.Write("口");
-                                }
-                                else
-                                {
-                                    Console.Write(run.InnerText);
-                                }
+                                run.InnerXml = run.InnerXml.Replace("w:val=\"0\"", "w:val=\"1\"");
                             }
-                        }
-                        else
-                        {
-                            Console.Write(parag.InnerText);
+                            cnt++;
                         }
                     }
-                    Console.Write("\t");
-                }
-                Console.
-                    WriteLine();
-            }
-        }
-        static void showTable_numPr(Table _tbl)
-        {
-            foreach (TableRow row in _tbl.Elements<TableRow>())
-            {
-                foreach (TableCell cell in row.Elements<TableCell>())
-                {
-                    if (cell.InnerXml.Contains("numPr"))
-                    {
-
-                        Console.WriteLine("numPr");
-                        string pattern = @"<W:numPr>*</w:numPr>";
-                        Console.WriteLine(cell.InnerXml);
-                        Console.WriteLine(cell.InnerXml.Split("w:numPr")[1]);
-
-                        foreach (var ele_ in cell.ChildElements)
-                        {
-                            Console.WriteLine(ele_.GetType().ToString());
-                        }
-                        foreach (Paragraph parag in cell.Elements<Paragraph>())
-                        {
-
-                            foreach (Run run in parag.Elements<Run>())
-                            {
-                                // Console.Write(run.InnerXml);
-                                Console.Write(run.InnerText);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.Write(cell.InnerText);
-                    }
-                    Console.Write("\t");
-                }
-                Console.WriteLine();
-            }
-        }
-        public static void OpenAndAddToWordprocessingStream(Stream stream, string txt)
-        {
-            // Open a WordProcessingDocument based on a stream.
-            WordprocessingDocument wordprocessingDocument =   WordprocessingDocument.Open(stream, true);
-            // Assign a reference to the existing document body.
-            Body body = wordprocessingDocument.MainDocumentPart.Document.Body;
-            // Add new text.
-            Paragraph para = body.AppendChild(new Paragraph());
-            Run run = para.AppendChild(new Run());
-            run.AppendChild(new Text(txt));
-            // Close the document handle.
-            wordprocessingDocument.Close();
-            // Caller must close the stream.
-        }
-
-        /*
-         * System.IO.File.WriteAllText(@"C:\code\ds_" + cno + ".json", Newtonsoft.Json.JsonConvert.SerializeObject(ds));
-         *
-         *string json = System.IO.File.ReadAllText(@"json/ds_" + pclass + ".json");
-            DataSet ds = JsonConvert.DeserializeObject<DataSet>(json);
-            for (int i = 0; i < ds.Tables.Count; i++)
-            {
-                Console.WriteLine(ds.Tables[i].TableName);
-            }
-            DataColumn pcol = ds.Tables["Table"].Columns["stud_ref"];
-            String[] subtbNs = { "py", "cd", "mk", "ac", "gc" };
-            for (int i = 0; i < subtbNs.Length; i++)
-            {
-                DataColumn ccol = ds.Tables[subtbNs[i]].Columns["stud_ref"];
-                if (ccol != null)
-                {
-                    DataRelation dr = new DataRelation("sr_" + subtbNs[i], pcol, ccol);
-                    dr.Nested = true;
-                    ds.Relations.Add(dr);
                 }
             }
-      */
+        }
+        public static string[] baseinfo_field_posi = new string[]{
+        "NAME_C","0.2",
+        "NAME_P","0.4",
+        "SEX","2.1",
+        "B_DATE","1.3",
+        "B_PLACE","1.5",
+        "ID_TYPE","3.3",
+        "ID_NO","3.5",
+        "I_PLACE","5.3",
+        "I_DATE","6.4",
+        "V_DATE","6.5",
+        "S6_TYPE","",
+        "S6_IDATE", "7.3",
+        "S6_VDATE", "7.5",
+        "NATION","9.1",
+        "ORIGIN","9.2",
+        "R_AREA","",
+        "RA_DESC","8.4",
+        "AREA","",
+        "POSTAL_CODE","10.3",
+        "ROAD","10.5",
+        "ADDRESS","12.3",
+        "TEL","12.5",
+        "MOBILE","13.5",
+        "FATHER","14.2",
+        "MOTHER","15.2",
+        "F_PROF","14.4",
+        "M_PROF","15.4",
+        "GUARD","",
+        "G_RELATION","16.4",
+        "GUARDMOBIL","16.6",
+        "LIVE_SAME",""
+       };
+
+        public static string[] GU_field_posi = new string[]{
+        "G_NAME","0.2",
+        "G_RELATION","",
+        "G_PROFESSION","0.4",
+        "G_AREA","",
+        "G_POSTAL_CODE","",
+        "G_ROAD","1.4",
+        "G_ADDRESS","3.3",
+        "G_TEL","3.5",
+        };
+
+        public static string[] EC_field_posi = new string[]{
+        "EC_NAME","0.2",
+        "EC_REL","0.4",
+        "EC_TEL","3.6",
+        "EC_AREA","",
+        "EC_POSTAL_CODE"," ",
+        "EC_ROAD","1.4",
+        "EC_ADDRESS","3.3" };
+        public static string[] reqinfo_field_posi = new string[]{
+        "F_tel1"," 0.1",
+        "F_tel2","0.3",
+        "M_tel1","1.1",
+        "M_tel2","1.3",
+        "G_tel1","2.1",
+        "G_tel2","2.3",
+        "Parent_sms","3.1",
+        "STUD_ID","4.1",
+        "Stud_sms","5.1" };
+
     }
 }
