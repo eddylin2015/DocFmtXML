@@ -6,3 +6,4 @@ xout*.docx
 ~*.*
 .vs/
 td.json
+ESData.cs
