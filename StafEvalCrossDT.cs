@@ -115,10 +115,9 @@ namespace DocFmtXML
         {
             System.Collections.Hashtable formdesc = new System.Collections.Hashtable();
             System.Collections.Hashtable qizrate = new System.Collections.Hashtable();
-
             System.Collections.Hashtable qiz_desc = new System.Collections.Hashtable();
             String qizratesql = "select key0,rate,stype,formtype,formname from stafeval_gridqiz where key0 like '%e';";
-            System.Data.Common.DbDataReader qizratedr = ESData.GetInst.Reader(qizratesql);
+            DbDataReader qizratedr = ESData.GetInst.Reader(qizratesql);
             while (qizratedr.Read())
             {
                 qizrate.Add(qizratedr.GetString(0).Substring(0, 3), qizratedr.GetInt32(1));
@@ -130,9 +129,9 @@ namespace DocFmtXML
             }
             qizratedr.Close();
             qizratedr.Dispose();
-            System.Data.DataTable dt = new System.Data.DataTable();
+            DataTable dt = new DataTable();
             String sql = "select staf_ref,c_name,tostaf_ref,toname,formtype from stafeval_grid group by staf_ref,tostaf_ref,formtype,c_name,toname;";
-            System.Data.Common.DbDataReader dr = ESData.GetInst.Reader(sql);
+            DbDataReader dr = ESData.GetInst.Reader(sql);
             dt.Load(dr);
             System.Text.Encoding enc = System.Text.Encoding.GetEncoding("us-ascii");
             for (byte i = 65; i < 91; i++)
@@ -148,7 +147,7 @@ namespace DocFmtXML
                 byte[] bytes = { i };
                 dt.Columns.Add("Q" + enc.GetString(bytes));
             }
-
+            dr.Close();
             String sql0 = "select staf_ref,tostaf_ref,formtype,qiz,ans0 from stafeval_grid ;";
             System.Data.Common.DbDataReader dr0 = ESData.GetInst.Reader(sql0);
             while (dr0.Read())
@@ -165,11 +164,10 @@ namespace DocFmtXML
                     {
                         row["Q" + f] = qiz_desc[key0.ToLower()].ToString();
                     }
-                    //Console.WriteLine("debug:" + dr0.GetString(0) + dr0.GetString(1));
+                    //MessageBox.Show("debug:" + dr0.GetString(0) + dr0.GetString(1));
                     //if (dr0.IsDBNull(dr0.GetOrdinal("ans0")) || dr0["ans0"].ToString().Equals("")) 
                     if (dr0.IsDBNull(4) || dr0["ans0"].ToString().Equals(""))
                     {
-
                     }
                     else if (int_type == 1 && dr0["ans0"].ToString().Length > 0)
                     {
@@ -198,10 +196,9 @@ namespace DocFmtXML
                         row[f] = dr0["ans0"];
                     }
                 }
-
             }
-            dr.Close();
-            dr.Dispose();
+            dr0.Close();
+            dr0.Dispose();
             if (int_type == 1 || int_type == 2)
             {
                 foreach (DataRow row in dt.Rows)
@@ -224,6 +221,7 @@ namespace DocFmtXML
                     row["total"] = total;
                 }
             }
+            Console.WriteLine("done.");
             return dt;
         }
 
