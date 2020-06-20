@@ -50,6 +50,7 @@ namespace DocFmtXML
                         {
                             Table reginfo_table = GetCell((Table)clone_ele, 0, 0).Elements<Table>().ElementAt(0);
                             fillTextInTable(reginfo_table, reqinfo_field_posi, dt.Rows[i]);
+                             ChangeTextInCell(reginfo_table, 4, 1, String.Format("{0}{1}{2}", dt.Rows[i]["STUD_ID"], dt.Rows[i]["Reg_in_date"], dt.Rows[i]["Reg_in_Class"]));
                         }
                         clone_li.Add(clone_ele);
                     }
@@ -60,10 +61,12 @@ namespace DocFmtXML
                 {
                     Table reginfo_table = GetCell((Table)templete_li.ElementAt(33), 0, 0).Elements<Table>().ElementAt(0);
                     fillTextInTable(reginfo_table, reqinfo_field_posi, dt.Rows[0]);
+                     ChangeTextInCell(reginfo_table, 4, 1, String.Format("{0}{1}{2}", dt.Rows[0]["STUD_ID"], dt.Rows[0]["Reg_in_date"], dt.Rows[0]["Reg_in_Class"]));
                 }
                 {
                     Table reginfo_table = GetCell((Table)templete_li.ElementAt(31), 0, 0).Elements<Table>().ElementAt(0);
                     fillTextInTable(reginfo_table, reqinfo_field_posi, dt.Rows[0]);
+                     ChangeTextInCell(reginfo_table, 4, 1, String.Format("{0}{1}{2}", dt.Rows[0]["STUD_ID"], dt.Rows[0]["Reg_in_date"], dt.Rows[0]["Reg_in_Class"]));
                 }
                 if (dt.Rows[0]["St_status"].Equals("1=新生"))
                 {
