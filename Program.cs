@@ -19,8 +19,8 @@ namespace DocFmtXML
             if (File.Exists(@"C:\code\DocFmtXML\td.json")) json = System.IO.File.ReadAllText(@"C:\code\DocFmtXML\td.json");
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(json.Replace("'", "\""));
             DOCF_DSEJB01_FORM.docx(dt, Tml_Doc, strDoc1);
-            DataTable _dt=StafEvalCrossDT.GetCrossTable_type(0);
-            Console.WriteLine(_dt.Rows.Count);
+           // DataTable _dt=StafEvalCrossDT.GetCrossTable_type(0);
+          //  Console.WriteLine(_dt.Rows.Count);
         }
     }
 }

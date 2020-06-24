@@ -97,7 +97,7 @@ namespace DocFmtXML
                 else
                 {
                     string[] arr = baseinfo_field_posi[i * 2 + 1].Split('.');
-                   // Console.WriteLine(baseinfo_field_posi[i * 2]);
+                    Console.WriteLine(baseinfo_field_posi[i * 2]);
                     if (arr.Length == 2)
                         ChangeTextInCell(table_, int.Parse(arr[0]), int.Parse(arr[1]), dr[baseinfo_field_posi[i * 2]].ToString());
                 }
@@ -144,8 +144,10 @@ namespace DocFmtXML
                     }
                     else if (ele.InnerText.Contains("學生個人資料"))
                     {
+                        
                         var table_ = (Table)ele;
                         fillTextInTable(table_, baseinfo_field_posi, dr);
+                        
                         ChangeDateInCell(table_, 1, 3, dr["B_DATE"].ToString());
                         if (dr["SEX"].ToString().Equals("M")) { SetChkBox(table_, 2, 1, 0); }
                         else if (dr["SEX"].ToString().Equals("F")) { SetChkBox(table_, 2, 1, 1); }
@@ -155,8 +157,8 @@ namespace DocFmtXML
                         else if (dr["IDT"].ToString().Equals("BIRNP")) { SetChkBox(table_, 4, 2, 1); }
                         if (dr["IP"].ToString().Equals("1")) { SetChkBox(table_, 6, 2, 0); }
                         else if (dr["IP"].ToString().Equals("2")) { SetChkBox(table_, 6, 2, 1); }
-                        if (dr["RAR"].ToString().Equals("M")) { SetChkBox(table_, 9, 3, 0); }
-                        else if (dr["RAR"].ToString().Equals("C")) { SetChkBox(table_, 9, 3, 1); }
+                        if (dr["RAR"].ToString().Equals("M")) { SetChkBox(table_, 13, 2, 0); }
+                        else if (dr["RAR"].ToString().Equals("C")) { SetChkBox(table_, 13, 2, 1); }
                         if (dr["AR"].ToString().Equals("M")) { SetChkBox(table_, 11, 2, 0); }
                         else if (dr["AR"].ToString().Equals("T")) { SetChkBox(table_, 11, 2, 1); }
                         else if (dr["AR"].ToString().Equals("C")) { SetChkBox(table_, 11, 2, 2); }
@@ -164,7 +166,8 @@ namespace DocFmtXML
                         if (dr["GUARD"].ToString().Equals("F")) { SetChkBox(table_, 16, 3, 0); }
                         else if (dr["GUARD"].ToString().Equals("M")) { SetChkBox(table_, 16, 3, 1); }
                         else if (dr["GUARD"].ToString().Equals("O")) { SetChkBox(table_, 16, 3, 2); }
-
+                        if (dr["LIVE_SAME"].ToString().Equals("1")) { SetChkBox(table_, 12, 5, 0); }
+                        else if (dr["LIVE_SAME"].ToString().Equals("0")) { SetChkBox(table_, 12, 5, 1); }
                     }
                     else if (cnt == 6)
                     {
@@ -172,7 +175,6 @@ namespace DocFmtXML
                         fillTextInTable(table_, GU_field_posi, dr);
                         if (dr["GAR"].ToString().Equals("M")) { SetChkBox(table_, 2, 2, 0); }
                         else if (dr["GAR"].ToString().Equals("C")) { SetChkBox(table_, 2, 2, 1); }
-
                     }
                     else if (cnt == 7)
                     {
@@ -211,6 +213,8 @@ namespace DocFmtXML
         static void ChangeTextInCell(Table table, int rindex, int cindex, String txt)
         {
             TableRow row = table.Elements<TableRow>().ElementAt(rindex);
+            List<TableCell> li=row.Elements<TableCell>().ToList();
+            Console.Write(li.Count);
             TableCell cell = row.Elements<TableCell>().ElementAt(cindex);
             Paragraph p = cell.Elements<Paragraph>().First();
             var r_li = p.Elements<Run>().ToArray();
@@ -266,22 +270,27 @@ namespace DocFmtXML
         "S6_VDATE", "7.5",
         "NATION","9.1",
         "ORIGIN","9.2",
-        "R_AREA","",
-        "RA_DESC","8.4",
+        "TEL","8.5",
+        "MOBILE","9.5",
+
+
         "AREA","",
         "POSTAL_CODE","10.3",
         "ROAD","10.5",
-        "ADDRESS","12.3",
-        "TEL","12.5",
-        "MOBILE","13.5",
+        "ADDRESS","11.3",
+
+        "R_AREA","",
+        "RA_DESC","13.4",
+        "R_ADDRESS","13.6",
+        "LIVE_SAME","",
         "FATHER","14.2",
         "MOTHER","15.2",
         "F_PROF","14.4",
         "M_PROF","15.4",
         "GUARD","",
         "G_RELATION","16.4",
-        "GUARDMOBIL","16.6",
-        "LIVE_SAME",""
+        "GUARDMOBIL","16.6"
+      
        };
 
         public static string[] GU_field_posi = new string[]{
